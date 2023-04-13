@@ -16,26 +16,21 @@ def delete(task_id):
     return jsonify(result)
 
 
-@app.route("/edit-status/<int:task_id>", methods=['PATCH'])
-def update_status(task_id):
+@app.route("/edit-status/<int:id>", methods=['POST'])
+def update_status(id):
     """ recieved post requests for entry updates """
 
     data = request.get_json()
-
     try:
         if "status" in data:
-            db_helper.update_status_entry(task_id, data["status"])
+            db_helper.update_status_entry(id, data["status"])
             result = {'success': True, 'response': 'Status Updated'}
         else:
             result = {'success': True, 'response': 'Nothing Updated'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
-
+    print(result)
     return jsonify(result)
-
-
-
-
 
 
 @app.route("/create", methods=['POST'])
@@ -61,3 +56,11 @@ def homepage():
     return render_template("index.html", items=items)
 
 
+
+@app.route("/edit-the-task", methods=['PUT'])
+def update_task_entry():
+    """ recieves put request and updates the task name """
+    data = request.get_json()
+    db_helper.update_task_entry(data['description'],data['id'])     
+    result = {'success': True, 'response': 'Updated the task name successfully'}
+    return jsonify(result)  
